@@ -1,0 +1,1336 @@
+#大话PHP设计模式
+<!-- * 第一章. [命名空间与Autoload](#1)
+* 第二章. [PHP面向对象](#2)
+* 第三章. [三种基础设计模式](#3)
+* 第四章. [适配器模式](#4)
+* 第五章. [策略模式](#5)
+* 第六章. [数据对象映射模式](#6)
+* 第七章. [观察者模式](#7)
+* 第八章. [原型模式](#8)
+* 第九章. [装饰器模式](#9)
+* 第十章. [迭代器模式](#10)
+* 第十一章. [代理模式](#11)
+ -->
+
+[TOC]
+
+##<font id='1'>命名空间与Autoload</font>
+###<font id='1-1'>（一）命名空间</font>
+test1.php
+```php
+<?php
+namespace Test1;
+
+function test() {
+    echo __FILE__;
+}
+```
+test2.php
+```php
+namespace Test2;
+
+function test() {
+    echo __FILE__;
+}
+```
+test.php
+```php
+require 'test1.php';
+require 'test2.php';
+
+Test1\test();
+Test2\test();
+```
+###<font id='1-2'>（二）Autoload</font>
+test.php
+```php
+// 允许存在多个，而不会报错重复定义，取代__autoload()
+spl_autoload_register(autoload1);
+spl_autoload_register(autoload2);
+
+Test1\test();
+Test2\test();
+
+function autoload1($class) {
+    require __DIR__ . '/' . $class . '.php';
+}
+function autoload2($class) {
+    require __DIR__ . '/' . $class . '.php';
+}
+```
+###<font id='1-3'>（三）PSR-0规范</font>
+（1）三项规定
+
+* 命名空间必须与绝对路径一致
+* 类名首字母必须大写
+* 除入口文件外，其他“.php”必须只有一个类
+
+（2）开发符合PSR-0规范的基础框架
+
+* 全部使用命名空间
+* 所有PHP文件必须自动载入，不能有include/require
+* 单一入口
+
+（3）具体步骤
+
+* 建立App文件夹存放所有功能逻辑业务代码
+* 建立IMooc文件夹存放业务无关公共类（命名空间即是文件绝对路径）
+* 文件名必须与类名一致
+
+\IMooc\Object.php
+```php
+namespace IMooc;
+
+class Object() {
+    static function test() {
+        echo __METHOD__;
+    }
+}
+```
+\App\Controller\Home\Index.php
+```php
+namespace \App\Controller\Home;
+
+class Index() {
+    static function test() {
+        echo __METHOD__;
+    }
+}
+```
+\IMooc\Loader.php
+```php
+namespace IMooc;
+class Loader{
+    // $class为包含命名空间的类名字符串
+    static function autoload($class){
+        require BASEDIR. '/' . str_replace(''\\'', ''/'', $class). '.php';
+    }
+}
+```
+\index.php
+```php
+define(''BASEDIR'', __DIR__);
+include BASEDIR . '/IMooc/Loader.php';
+
+// 替代__autoload()函数
+spl_autoload_register('\\IMooc\\Loader::autoload');
+IMooc\Object::test();
+App\Controller\Home\Index::test();
+```
+##<font id='2'>PHP面向对象</font>
+###<font id='2-1'>（一）PHP链式操作的实现</font>
+\IMooc\Database.php
+```php
+namespace IMooc;
+
+class Database{
+     // 核心：在每个方法最后return $this;
+    public function where($where){
+        return $this;
+    }
+
+    public function order($order){
+        return $this;
+    }
+
+    public function limit($limit){
+        return $this;
+    }
+}
+```
+\index.php
+```php
+// 通过一行代码实现多行代码
+$db = new IMooc\Database();
+$db->where('id=1')->where('name=2')->order('id desc')->limit(10);
+```
+##<font id='3'>三种基础设计模式</font>
+###<font id='3-1'>（一）基础设计模式简介</font>
+
+* 工厂模式，工厂方法或类生成对象，而不是在代码中直接new
+* 单例模式，使某个类的对象仅允许创建一个
+* 注册模式，全局共享和交换对象
+
+###<font id='3-2'>（二）工厂模式</font>
+\IMooc\Factory.php
+```php
+namespace IMooc;
+
+class Factory{
+    static function createDatabase() { 
+        // 工厂模式用途：统一定义类名及参数
+        $db = new Database;
+        reutrn $db;
+    }
+}
+```
+\index.php
+```php
+$db = IMooc\Factory::createDatabase();
+```
+###<font id='3-3'>（三）单例模式</font>
+\IMooc\Database.php
+```php
+// 外层无法直接new，屏蔽其他地方实例化
+protected $db;
+private function __construct() {}
+static function getInstance() {
+    if(!self::$db){
+        self::$db = new self();
+    }
+    return self::$db;
+}
+```
+\index.php
+```php
+// 无论如何都只会创建一个实例
+$db = \IMooc\Database::getInstance();
+$db = \IMooc\Database::getInstance();
+$db = \IMooc\Database::getInstance();
+```
+\IMooc\Factory.php
+```php
+// 工厂单例模式
+static function createDatabase() {
+    $db = Database::getInstance();
+    reutrn $db;
+}
+```
+###<font id='3-4'>（四）注册树模式</font>
+\IMooc\Register.php
+```php
+namespace IMooc;
+class Register{
+    protected static $objects;
+
+    // 将对象放在树上
+    static function set($alias, $object) {
+        self::$objects[$alias] = $object;
+    }
+
+    // 将对象在树上移除
+    static function _unset($alias){
+        unset(self::$objects[$alias]);
+    }
+
+    // 取得树上的对象
+    static function get($alias){
+        return self::$objects[$alias];
+    }
+}
+```
+\IMooc\Factory.php
+```php
+// 映射到全局树上
+static function createDatabase() {
+    $db = Database::getInstance();
+    Register::set('db1', $db);
+    reutrn $db;
+}
+```
+\index.php
+```php
+// 对象的注册及卸载由环境初始化工作决定，业务逻辑代码中只需要从树上读取即可。
+$db = \IMooc\Register::get('db1');
+```
+##<font id='4'>适配器模式</font>
+###<font id='4-1'>简介</font>
+* 适配器模式，可以将截然不同的函数接口封装成统一的API。
+* 实际应用举例，PHP的数据库操作有mysql，mysqli，pdo3种，可以用适配器模式统一成一致。类似的场景还有cache适配器，将memcache，redis，file，apc等不同的缓存函数，统一成一致。
+###<font id='4-2'>实现与使用</font>
+\IMooc\Database.php
+```php
+// 适配器约定好有哪些行为，将不同数据库函数封装成统一的API.
+interface IDatabase{
+    function connect($host, $user, $password, $dbname);
+    function query($sql);
+    function close();
+}
+```
+\IMooc\Database\MySQL.php
+```php
+namespace \IMooc\Database;
+
+use IMooc\IDatabase;
+
+class MySQL implements IDatabase{
+
+    protected $conn;
+
+    function connect($host, $user, $password, $dbname){
+        $this->conn = mysql_connect($host, $user, $password);
+        return mysql_select_db($dbname, $$this->conn);
+    }
+
+    function query($sql){
+        return mysql_query($sql, $this->conn);
+    }
+
+    function close(){
+        mysql_close($this->conn);
+    }
+}
+```
+\IMooc\Database\MySQLi.php
+```php
+namespace \IMooc\Database;
+
+use IMooc\IDatabase;
+
+class MySQLi implements IDatabase{
+
+    protected $conn;
+
+    function connect($host, $user, $password, $dbname){
+        $this->conn = mysqli_connect($host, $user, $password, $dbname);
+    }
+
+    function query($sql){
+        return mysqli_query($this->conn, $sql);
+    }
+
+    function close(){
+        mysqli_close($this->conn);
+    }
+}
+```
+\IMooc\Database\PDO.php
+```php
+namespace \IMooc\Database;
+
+use IMooc\IDatabase;
+
+class PDO implements IDatabase{
+
+    protected $conn;
+
+    function connect($host, $user, $password, $dbname){
+        $this->conn = new \PDO("mysql:host=$host;dbname=$dbname", $user, $password);
+    }
+
+    function query($sql){
+        return $this->conn->query($sql);
+    }
+
+    function close(){
+        unset($this->conn);
+    }
+}
+```
+\index.php
+```php
+// 任意数据库操作切换，框架必须要做到支持任意机器上的任意数据库
+$db = new IMooc\Database\PDO();
+$db->connect('127.0.0.1', 'root', 'root', 'test');
+$db->query('show databases');
+$db->close();
+```
+##<font id='5'>策略模式</font>
+###<font id='5-1'>简介</font>
+* 策略模式，将一组特定的行为和算法封装成类，通过解耦解决硬编码的问题，以适应某些特定的上下文环境，这种模式就是策略模式。
+* 实际应用举例，假如一个电商网站系统，针对男性女性用户要各自跳转到不同的商品类目，并且所有广告位展示不同的广告。
+* 使用策略模式可以实现Ioc，依赖倒置、控制反转
+###<font id='5-2'>实现与使用</font>
+\IMooc\UserStrategy.php
+```php
+namespace IMooc;
+
+// 约定策略有哪些行为
+interface UserStrategy{
+    function showAd();
+    function showCategory();
+}
+```
+\IMooc\FemaleUserStrategy.php
+```php
+namespace IMooc;
+
+class FemaleUserStrategy implements UserStrategy{
+    function showAd(){
+        echo "2014新款女装";
+    }
+
+    function showCategory(){
+        echo "女装";
+    }
+}
+```
+\IMooc\MaleUserStrategy.php
+```php
+namespace IMooc;
+
+class MaleUserStrategy implements UserStrategy{
+    function showAd(){
+        echo "Ipone6";
+    }
+
+    function showCategory(){
+        echo "电子产品";
+    }
+}
+```
+\index.php
+```php
+
+// page依赖strategy类，通过策略模式解耦，在执行代码时进行绑定
+class Page{
+    protected $strategy;
+
+    function index(){
+        echo 'Ad:';
+        $this->strategy->Ad();
+        echo '<br/>';
+
+        echo 'category';
+        $this->strategy->showCategory();
+        echo '<br/>';
+    }
+
+    function setStrategy(\IMooc\UserStrategy $strategy) {
+        $this->strategy = $strategy;
+    }
+}
+
+$page = new Page();
+
+// 根据上下文环境设置策略，处理分支逻辑
+if(isset($_GET['female'])){
+    $strategy = new \IMooc\MaleUserStrategy();
+} else {
+    $strategy = new \IMooc\UserStrategy();
+}
+$page->setStrategy($strategy);
+$page->index();
+```
+##<font id='6'>数据对象映射模式</font>
+###<font id='6-1'>简介</font>
+* 数据对象映射模式，是将对象和数据存储映射起来，对一个对象的操作会映射为对数据存储的操作，与数据库表中的一条记录对应起来。
+* 在代码中实现数据对象映射模式，我们将实现一个ORM类，将复杂的SQL语句映射成对象属性的操作。
+* 结合使用数据对象映射模式，工厂模式，注册模式
+###<font id='6-2'>简单实现</font>
+\IMooc\User.php
+```php
+namespace IMooc;
+
+class User{
+    public $id;
+    public $name;
+    public $mobile;
+    public $regtime;
+
+    protected $db;
+
+    function __construct($id){
+        $this->db = new IMooc\Database\MySQLi();
+        $this->db->connect('127.0.0.1', 'root', 'root', 'test');
+        $res = $this->db->query("select * from user where id = {$id} limit 1");
+        $data = $res->fetch_assoc();
+        $this->id = $data['id'];
+        $this->name = $data['name'];
+        $this->mobile = $data['mobile'];
+        $this->regtime = $data['regtime'];
+    }
+
+    function __destruct() {
+        $this->db->query("update user set name = '{$this->name}', mobile = '{$this->mobile}', regtime = '{$this->regtime}' where id = {$this->id} limit 1");
+    }
+}
+```
+\index.php
+```php
+
+// 将对SQL的直接操作换成对对象的操作
+$user = new User(1);
+
+$user->mobile = '13417502938';
+$user->name = 'test';
+$user->regtime = date('Y-m-d H:i:s');
+
+```
+###<font id='6-3'>复杂实现</font>
+\index.php
+```php
+class page{
+    function index() {
+        $user = \IMooc\Factory::getUser(1);
+        $user->name = 'dancdw';
+        $this->test();
+        echo 'ok';
+    }
+
+    function test() {
+        $user = \IMooc\Factory::getUser(1);
+        $user->mobile = '13417544441';
+    }
+}
+
+$page = new page();
+$page->index();
+
+```
+\IMooc\Factory.php
+```php
+// 定义工厂方法，便于统一管理
+static function getUser($id) {
+
+    // 如果是$id相同，表示对象相同，解决对象重复创建问题
+    $key = 'user_' . $id;
+    $user = Register::get($key);
+    if(!$user) {
+        Register::set($key, new User($id));
+    }
+    return $user;
+}
+```
+##<font id='7'>观察者模式</font>
+###<font id='7-1'>简介</font>
+* 观察者模式（Observer），当一个对象状态发生改变时，依赖它的对象全部会受到通知，并自动更新
+* 场景：一个事件发生后，要执行一连串更新操作。传统的编程方式，就是在事件的代码之后加入处理逻辑。当更新的逻辑增多之后，代码会变得难以维护。这种方式是耦合的，侵入式的，增加新的逻辑需要修改事件主体的代码。
+* 观察者模式实现了耦合，非入侵式的通知与更新机制。
+* ###<font id='7-2'>实现和使用</font>
+\index.php
+```php
+
+// 事件主体，实现事件与业务逻辑解耦
+class Event extends \IMooc\EventGenerator{
+    function trigger() {
+        echo "Event<br/>\n";
+        // 通知所有观察者
+        $this->notify();
+    }
+}
+
+// 增加观察者1
+class Observer1 implements \IMooc\Observer{
+    function update($event_info = null) {
+        echo "逻辑1<br />\n";
+    }
+}
+
+// 增加观察者2
+class Observer2 implements \IMooc\Observer{
+    function update($event_info = null) {
+        echo "逻辑1<br />\n";
+    }
+}
+
+$event = new Event();
+$event->addObserver(new Observer1());
+$event->addObserver(new Observer2());
+$event->trigger();
+
+```
+\IMooc\EventGenerator.php
+```php
+namespace IMooc;
+
+// 被观察的事件基类
+abstract class EventGenerator{
+    
+    // 事件本身不知道监听者是谁
+    private $observers = array();
+
+    // 增加观察者
+    function addObserver(Observer $observer){
+        $this->observers[] = $observer;
+    }
+
+    // 通知观察者
+    function notify() {
+        foreach($this->observers as $observer) {
+            $observer->update();
+        }
+    }
+}
+```
+\IMooc\Oberver.php
+```php
+namespace IMooc;
+
+interface Observer{
+    // 定义观察者的行为
+    function update($event_info = null);
+}
+```
+##<font id='8'>原型模式</font>
+###<font id='8-1'>简介</font>
+* 与工厂模式作用类似，都是用来创建对象。
+* 与工厂模式的实现不同，原型模式是先创建好一个原型对象，然后通过clone原型对象来创建新的对象。这样就免去了类创建时重复的初始化操作。
+* 原型模式适用于大对象的创建。创建一个大对象需要很多的开销，如果每次new就会消耗很大，原型模式仅需内存拷贝即可。
+###<font id='8-2'>实现和使用</font>
+\IMooc\Canvas.php
+```php
+namespace IMooc;
+
+class Canvas{
+    public $data;
+
+    // 初始化画布
+    function init($width = 20, $height = 10) {
+        $data = array();
+        for ($i=0; $i < $height; $i++) { 
+            for ($i=0; $i < $width; $i++) { 
+                $data[$i][$j] = '*';
+            }
+        }
+        $this->data = $data;
+    }
+
+    // 绘制图形
+    function rect($a1, $a2, $b1, $b2) {
+        foreach ($this->data as $k1 => $line) {
+            if ($key1 < $a1 or $k1 >$a2) continue;
+            foreach ($line as $k2 => $char) {
+                if ($k2 < $b or $k2 > $b2) continue;
+                $this->data[$k1][$k2] = '&nbsp';
+            }
+        }
+    }
+
+    // 输出
+    function draw() {
+        foreach($this->data as $line){
+            foreach ($line as $char) {
+                echo $char;
+            }
+            echo "<br/>\n";
+        }
+    }
+}
+```
+\index.php
+```php
+// 创建原型并初始化
+$prototype = new IMooc\Canvas();
+$prototype->init();
+$prototype->setColor();
+
+// 通过克隆创建新对象，节省系统开销直接在内存中拷贝
+$canvas1 = clone $prototype;
+$canvas1->rect(3, 6, 4, 12);
+$canvas1->draw();
+
+$canvas2 = clone $prototype;
+$canvas2->rect(3, 6, 4, 12);
+$canvas2->draw();
+```
+##<font id='9'>装饰器模式</font>
+###<font id='9-1'>简介</font>
+* 装饰器模式（Decorator），可以动态地添加修改类的功能。
+* 一个类提供了一项功能，如果要再修改并添加额外的功能，传统的编程模式，需要写一个子类继承它，并重新实现类的方法。
+* 使用装饰器模式，仅需在运行时添加一个装饰器对象即可实现，可以实现最大的灵活性。
+###<font id='9-2'>实现和使用</font>
+\index.php
+```php
+class Canvas2 extends IMooc\Canvas{
+    // 修改渲染颜色
+    function draw() {
+        echo "<div style='color:red;'>";
+        parent::draw();
+        echo '</div>';
+    }
+}
+
+// 传统继承方式
+$canvas1 = new Canvas2();
+$canvas1->init();
+$canvas1->rect(3, 6, 4, 12);
+$canvas1->draw();
+
+// 添加装饰器方式
+$canvas2 = new IMooc\Canvas();
+$canvas2->init();
+$canvas2->addDecorator(new \IMooc\ColorDrawDecorator('green'));
+$canvas2->addDecorator(new \IMooc\SizeDrawDecorator('10px'));
+$canvas2->rect(3, 6, 4, 12);
+$canvas2->draw();
+```
+\IMooc\DrawDecorator.php
+```php
+namespace IMooc;
+
+// 装饰器接口
+interface DrawDecorator{ // 接口中定义的都是抽象方法，因为继承接口必须实现里面所有方法
+    function beforeDraw();
+    function afterDraw();
+}
+```
+\IMooc\ColorDrawDecorator.php
+```php
+// 颜色填充装饰器
+class ColorDrawDecorator implements DrawDecorator{
+    protected $color;
+    function __construct($color = 'red') {
+        $this->color = $color;
+    }
+
+    function beforeDraw() {
+        echo "<div style = 'color:{$this->color};'>";
+    }
+
+    function afterDraw() {
+        echo "</div>";
+    }
+}
+```
+\IMooc\SizeDrawDecorator.php
+```php
+// 尺寸装饰器
+class SizeDrawDecorator implements DrawDecorator{
+    protected $size;
+    function __construct($size = '14px') {
+        $this->size = $size;
+    }
+
+    function beforeDraw() {
+        echo "<div style = 'size:{$this->size};'>";
+    }
+
+    function afterDraw() {
+        echo "</div>";
+    }
+}
+```
+
+\IMooc\Canvas.php
+```php
+    protected $decorators = array(); 
+
+    // 渲染输出
+    function draw() {
+        // 前置调用
+        $this->beforeDraw();
+        foreach($this->data as $line){
+            foreach ($line as $char) {
+                echo $char;
+            }
+            echo "<br/>\n";
+        }
+        // 后置调用
+        $this->afterDraw();
+    }
+
+    // 添加装饰器
+    function addDecorator(DrawDecorator $decorator) {
+        $this->decorators[] = $decorator;
+    }
+
+    // 渲染画布前调用装饰器方法
+    function beforeDraw() {
+        foreach ($this->decorators as $decorator) {
+            $decorator->beforeDraw();
+        }
+    }
+
+    // 渲染画布后调用装饰器方法
+    function afterDraw() {
+        // 后进先出
+        $decorators = array_reverse($this->decorators);
+        foreach ($decorators as $decorator) {
+            $decorator->afterDraw();
+        }
+    }
+```
+##<font id='10'>迭代器模式</font>
+###<font id='10-1'>简介</font>
+* 迭代器模式，在不需要了解内部实现的前提下，遍历一个聚合对象的内部元素。
+* 相对于传统的编程模式，迭代器模式可以隐藏遍历元素的所需的操作。
+###<font id='10-2'>实现和使用</font>
+\IMooc\AllUser.php
+```php
+namespace IMooc;
+
+// 继承PHP标准库，实现这五个方法
+class AllUser implements \Iterator{
+
+    protected $ids; // 所有Userid
+    protected $data = array(); // 数据库对象
+    protected $index; // 迭代器当前位置
+
+    function __construct() {
+        $db = Factory::createDatabase();
+        $result = $db->query('select id from user');
+        $this->ids = $result->fetch_all(MYSQLI_ASSOC);
+    }
+
+    // 获取当前数据
+    function current() {
+        $id = $this->ids[$this->index]['id'];
+        return Factory::getUser($id);
+    }
+
+    // 指针向下移动
+    function next() {
+        $this->index ++;
+    }
+
+    // 判断是否有下个元素
+    function valid() {
+        return $this->index < count($this->ids);
+    }
+
+    // 指针重置
+    function rewind() {
+        $this->index = 0;
+    }
+
+    // 获取当前索引
+    function key() {
+        return $this->index;
+    }
+}
+```
+\index.php
+```php
+$users = new \IMooc\AllUser();
+foreach ($users as $user) {
+    var_dump($user->name);
+    // 修改数据对象字段的数据
+    $user->serial_no = rand(10000, 99999);
+}
+```
+##<font id='11'>代理模式</font>
+###<font id='11-1'>简介</font>
+* 在客户端与实体之间建立一个代理对象（proxy），客户端对实体进行操作全部委派给代理对象，隐藏实体的具体实现细节。
+* Proxy还可以与业务代码分离，部署到另外的服务器。业务代码中通过RPC来委派任务。
+###<font id='11-2'>实现和使用</font>
+\index.php
+```php
+
+// 传统方法手动选择从主库，需要理解业务代码
+$db = \IMooc\Factory::createDatabase('slave');
+$info = $db->query('select name from user where id = 1 limit 1');
+
+$db1 = \IMooc\Factory::createDatabase('master');
+$db1->query('update user set name = 'lili' where id = 1 limit 1');
+
+// 操作数据库委派给代理对象
+$proxy = new \IMooc\Proxy();
+$proxy->getUserName($id);
+$proxy->setUserName($id, $proxy);
+```
+\IMooc\Proxy.php
+```php
+namespace \IMooc;
+
+class Proxy implements IUserProxy{
+
+    function getUserName($id){
+        $db = \IMooc\Factory::createDatabase('slave');
+        $info = $db->query('select name from user where id = {$id} limit 1');
+    }
+
+    function setUserName($id, $name){
+        $db1 = \IMooc\Factory::createDatabase('master');
+        $db1->query('update user set name = '{$name}' where id = {$id} limit 1');
+    }
+}
+```
+\IMooc\IUserProxy.php
+```php
+namespace \IMooc;
+
+interface IUserProxy{
+    function getUserName($id);
+    function setUserName($id, $name);
+}
+```
+##  综合实战
+### （一）面向对象设计基本原则
+1.单一职责：一个类，只需要做好一件事情，复杂功能拆分成更细更小的类。
+2.开放封闭：一个类，可扩展的（开放，通过扩展增加功能），而不可修改的（封闭）。
+3.依赖倒置：一个类，不应该强依赖另外一个类（B依赖注入到A类，B可替换切换）。
+4.配置化：尽可能地使用配置，而不是硬编码。
+5.面向接口编程：只需要关心接口，不需要关心实现。
+### （二）MVC结构（工程组织结构）
+** 模型-视图-控制器，一种C/S或B/S软件工程的组织方式 **（非设计模式）
+1.模型（Model）：数据和存储的封装
+2.视图（View）：展现层的封装，如Web系统中的模版文件
+3.控制器（Controller）：逻辑层的封装
+### （三）自动加载配置
+** PHP中使用ArrayAccess实现配置文件的加载 **
+
+\index.php
+```php
+// 通过配置文件类实现自动加载
+$config = new \IMooc\Config(__DIR__ . '/configs');
+var_dump($config['controller']);
+```
+IMooc\Config.php
+```php
+// 继承PHP标准类库接口，访问对象变成访问数组
+class Config implements \ArrayAccess{
+
+    protected $path;
+    protected $configs = array();  // 保存加载过的配置
+
+    function __construct($path) {
+        $this->path = str_replace('\\', '/', $path);
+    }
+
+    // 获取数组的key
+    function offsetGet($key) {
+        if(empty($this->configs[$key])){
+            $file_path = $this->path . '/' . $key . '.php';
+            $config = require $file_path;
+            $this->configs[$key] = $config;
+        }
+        return $this->configs[$key];
+    }
+
+    // 设置数组的key
+    function offsetSet($key, $value) {
+        throw new \Exception("cannot write config file.");
+    }
+
+    // 检测数组key是否存在
+    function offsetExists($key) {
+        return isset($this->configs[$key]);
+    }
+
+    // 删除数组的key
+    function offsetUnset($key) {}
+}
+```
+\configs\controller.php
+```php
+return array(
+    'home' => array(
+        'decorator' => array(
+            'IMooc/Decorator/Template'
+        ),
+    ),
+    'default' => 'hello world!'
+);
+```
+### （四）从配置中生成数据库连接
+**在工厂方法中读取配置，生成可配置化的对象**
+\configs\database.php
+```php
+return array(
+    'master' => array(
+        'type' => 'MySQL',
+        'host' => '127.0.0.1',
+        'user' => 'root',
+        'password' => 'root',
+        'dbname' => 'test'
+    ),
+    'slave' => array(
+        'slave1' => array(
+            'type' => 'MySQL',
+            'host' => '127.0.0.1',
+            'user' => 'root',
+            'password' => 'root',
+            'dbname' => 'test'
+        ),
+        'slave2' => array(
+            'type' => 'MySQL',
+            'host' => '127.0.0.1',
+            'user' => 'root',
+            'password' => 'root',
+            'dbname' => 'test'
+        ),
+    ),
+);
+```
+\IMooc\Factory.php
+```php
+static function createDatabase($id = 'master') {
+
+    if($id == 'slave') {
+        $slaves = Application::getInstance->config['database']['slave'];
+        $db_conf = $slaves[array_rand($slaves)];// 随机取一个从数据库配置
+    } else {
+        $db_conf = Application::getInstance()->config['database'][$id];
+    }
+
+    // 注册到树上
+    $key = 'database_' . $id;
+    $db = Register::get($key);
+    if(!$db) {
+        $db = new Database\MySQLi();
+        $db->connect($db_conf['host'], $db_conf['user'], $db_conf['password']);
+        Register::set($key, $db);
+    }
+    return $db;
+}
+```
+\IMooc\Application.php
+```php
+namespace IMooc;
+
+class Application{
+    public $base_dir;
+    protected static $instance;
+
+    public $config;
+
+    protected function  __construct($base_dir) {
+        $base_dir = str_replace(''\\'', ''/'', $base_dir);
+        $this->base_dir = $base_dir;
+        $this->config = new Config($base_dir . '/configs');
+    }
+
+    // 工厂单例
+    static function getInstance($base_dir = '') {
+        if(empty(self::$instance)){
+            self::$instance = new self($base_dir);
+        }
+        reutrn self::$instance;
+    }
+}
+```
+\index.php
+```php
+$db = \IMooc\Factory::createDatabase();
+```
+### （五）装饰器模式在MVC中的使用
+**使用装饰器模式实现权限验证，模版渲染，JSON串化**
+
+\configs\controller.php
+```php
+return array(
+
+    // Home控制器
+    'Home' => array(
+        'decorator' => array(
+            'App\Decorator\Login',
+            'App\Decorator\Template',
+            'App\Decorator\Json'
+        ),
+    ),
+);
+```
+\IMooc\Application.php
+```php
+// 调度
+function dispatch() {
+
+    // 获取控制器和方法名
+    $uri = $_SERVER['SCRIPT_NAME'];
+    list($c, $v) = explode('/', trim($uri, '/'));
+
+    $c_low = strtolower($c); // 全部小写
+    $c = ucwords($c); // 首字母大写
+
+    $class = '\\App\\Controller\\' . $c; // 拼接控制器命名空间
+    $obj = new $class($c, $v); // 实例化控制器
+
+    // 获取配置信息
+    $controller_config = $this->config['controller'];
+    $decorators = array();
+
+    // 是否配置装饰器
+    $conf_decorator = $controller_config[$c_low]['decorator'];
+    if(isset($conf_decorator)) {
+        foreach($conf_decorator as $class) {
+            $decorators[] = new $class;
+        }
+    }
+
+    // 开始执行装饰器前置
+    foreach ($decorators as $decorator) {
+        $decorator->beforeRequest($obj);
+    }
+
+    // 执行用户事件
+    $return_value = $obj->$v();
+
+    // 开始执行装饰器后置 
+    foreach ($decorators as $decorator) {
+        $decorator->afterRequest($return_value);
+    }
+}
+```
+\IMooc\Controller.php
+```php
+namespace IMooc;
+
+abstract class Controller{
+
+    protected $data;
+    protected $controller_name;
+    protected $view_name;
+    protected $template_dir;
+
+    // 初始化控制器名、事件名、模板目录
+    function __construct($controller_name, $view_name) {
+        $this->controller_name = $controller_name;
+        $this->view_name = $view_name;
+        $this->template_dir = Application::getInstance()->base_dir . '/templates';
+    }
+
+    // 模板变量赋值
+    function assign($key, $value) {
+        $this->data[$key] = $value;
+    }
+
+    // 加载模板文件，并将变量注册到模板中
+    function display($file = '') {
+        if(empty($file)) { 
+            $file = strtolower($this->controller_name) . '/' . $this->view_name . '.php';
+        }
+        $path = $this->template_dir . '/' . $file;
+        extract($this->data);
+        include $path;
+    }
+}
+```
+\App\Decorator\Login.php
+```php
+// 登录装饰器
+class Login{
+    function beforRequest($controller) {
+
+        // 验证是否登录
+        session_start();
+        if(empty($_SESSION['isLogin'])){
+            $url = $_SERVER['SCRIPT_NAME'];
+            header("Location:/login/index");
+            exit;
+        }
+    }
+
+    function afterRequest($return_value) {}
+}
+```
+\App\Decorator\Json.php
+```php
+// Json装饰器
+class Json{
+    function beforRequest($controller) {}
+
+    function afterRequest($return_value) {
+        if($_GET['format'] == 'json') {
+            echo json_encode($return_value);
+        }
+    }
+}
+```
+\App\Decorator\Template.php
+```php
+// 模板装饰器
+class Template{
+
+    protected $controller;
+
+    function beforRequest($controller) {
+        $this->controller = $controller;    
+    }
+
+    function afterRequest($return_value) {
+        if($_GET['format'] == 'html') {
+            foreach($return_value as $k => $v) {
+                $this->controller->assign($k, $v);
+            }
+            $this->controller->display();
+        }
+    }
+}
+```
+\App\Controller\Home.php
+```php
+namespace App\Controller;
+
+// 使用命名空间
+use IMooc\Controller;
+use IMooc\Factory;
+
+class Home extends Controller{
+    function index() {
+        // 使用装饰器，直接return
+        return array('userid' => 1, 'name' => 'rango');
+    }
+}
+```
+\IMooc\Factroy.php
+```php
+
+// 获取模型
+static function getModel($name) {
+    $key = 'app_model_' . $name;
+    $model = Register::get($key);
+    if(empty($model)) {
+        $class = '\\App\\Model\\' . ucwords($name);
+        $model = new $class;
+        Register::set($key, $model);
+    }
+    return $model;
+}
+```
+
+\index.php
+```php
+\IMooc\Application::getInstance(__DIR__)->dispatch();
+```
+### （六）观察者模式在MVC中的使用
+**使用观察者模式实现数据更新时的一系列更新操作**
+
+\App\Controller\Home.php
+```php
+function index() {
+    $model = Factory::getModel('User');
+    $userid = $model->create(array('name' => 'rango', 'mobile' => 13417592837));
+    
+    // 使用装饰器，直接return
+    return array('userid' => $userid, 'name' => 'rango');
+}
+```
+\App\Model\User.php
+```php
+namespace App\Model;
+
+use IMooc\Factroy;
+
+ // 用户模型
+class User extends \IMooc\Model {
+    function create($user) {
+        $userid = 1;
+        $this->notify($user);
+        return $userid;
+    }
+}
+```
+\IMooc\Model.php
+```php
+namespace IMooc;
+
+class Model {
+    protected $observers = array();
+
+    function __construct() {
+        // 获取当前模型名称
+        $name = strtolower(str_replace('App\Model\\', '', get_class($this)));
+        $observers = Application::getInstance()->config['model'][$name]['observer'];
+        
+        // 添加观察者
+        if(!empty($observers)) {
+            foreach ($observers as $class) {
+                $observers[] = new $class;
+            }
+        }
+    }
+
+    // 通知观察者
+    function notify($event) {
+        foreach ($this->observers as $observer) {
+            $observer->update($event);
+        }
+    }
+}
+```
+\configs\Model.php
+```php
+// 通过配置添加观察者
+return array(
+    'user' => array(
+        'observer' => array(
+            'App\Observer\UserAdd1',
+            'App\Observer\UserAdd2',
+            'App\Observer\UserAdd3',
+        )
+    )
+);
+```
+\App\Observer\UserAdd1.php
+```php
+namespace App\Observer;
+
+class UserAdd1
+{
+    function update($id)
+    {
+        echo "分配工位<br/>";
+    }
+}
+```
+\App\Observer\UserAdd2.php
+```php
+namespace App\Observer;
+
+class UserAdd2
+{
+    function update($id)
+    {
+        echo "注册社保<br/>";
+    }
+}
+```
+\App\Observer\UserAdd3.php
+```php
+namespace App\Observer;
+
+class UserAdd3
+{
+    function update($id)
+    {
+        echo "分配电脑<br/>";
+    }
+}
+```
+### （七）代理模式在MVC中的使用
+**使用代理模式实现数据库的主从自动切换**
+
+\App\Controller\Home.php
+```php
+function index2() {
+    
+    // 代理对象会自动调用主从服务器
+    $db = Factory::createDatabase();
+    $db->query("select * from user");
+    $db->query("delete from user where id = 1");
+    $db->query("update user set name = 'rango' where id = 1");
+}
+```
+\IMooc\Factory.php
+```php
+protected static $proxy;
+
+static function createDatabase($id = 'proxy') {
+
+    // 默认将数据库操作委派给代理对象
+    if($id == 'proxy') {
+        if(empty(self::$proxy)) {
+            self::$proxy = new \IMooc\Database\Proxy;
+        }
+        return self::$proxy;
+    }
+
+    if($id == 'slave') {
+        $slaves = Application::getInstance->config['database']['slave'];
+        $db_conf = $slaves[array_rand($slaves)];// 随机取一个从数据库配置
+    } else {
+        $db_conf = Application::getInstance()->config['database'][$id];
+    }
+
+    // 注册到树上
+    $key = 'database_' . $id;
+    $db = Register::get($key);
+    if(!$db) {
+        $db = new Database\MySQLi();
+        $db->connect($db_conf['host'], $db_conf['user'], $db_conf['password']);
+        Register::set($key, $db);
+    }
+    return $db;
+}
+```
+\IMooc\Database\Proxy.php
+```php
+namespace IMooc\Database;
+use IMooc\Factory;
+
+class Proxy{
+    function query($sql) {
+        if(substr($sql, 0, 6) == 'select') {
+            echo "读操作：$sql<br />";
+            return Factory::createDatabase('slave')->query($sql);
+        } else {
+            echo "写操作：$sql<br />";
+            return Factory::createDatabase('master')->query($sql);
+        }
+    }
+} 
+```
+
+
+
