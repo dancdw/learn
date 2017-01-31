@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Javascript动画</title>
+    <style type="text/css">
+        *{
+            margin:0px;
+            padding:0px;
+        }
+        #parent{
+            width:500px;
+        }
+        .son{
+            position: relative;
+            
+        }
+
+        .son div{
+            height: 20px;
+            background-color:green;
+            position: absolute;
+            color:#666;
+            left:0px;
+            /* right:0px; */
+        }
+    </style>
+</head>
+<body>
+    <div id="parent">
+        <div class="son">
+            <div></div>
+        </div>
+        <div class="son">
+            <div></div>
+        </div>
+        <div class="son">
+            <div></div>
+        </div>
+    </div>
+    <script type="text/javascript">
+       (function() {
+
+       })();
+        var getStyle = function(elem, property) {
+            return window.getComputedStyle(elem)[property];
+        }
+        var parent = document.getElementById("parent");
+        var pWidth = parseFloat(getStyle(parent, "width"));
+        var pHeight = 20;
+        var currIndex = 0;
+        var animation = function() {
+            if(currIndex > parent.children.length - 1) currIndex = 0;
+            var width = pWidth;
+            var clearProgress = function(currElem, top) {
+                clearInterval(interval);
+                currElem.style.top = top + "px";
+                currElem.style.right = pWidth + "px";
+                currIndex++;
+                animation();
+                return;
+            }
+            var progress = function(currElem) {
+                width--;
+                var top = pHeight * currIndex;
+                currElem.style.top = top + "px";
+                currElem.style.right = width + "px";
+                if(width < 1) clearProgress(currElem, top);
+            }
+            var interval = setInterval(progress, 1, parent.children[currIndex].children[0]);
+        }
+        animation();
+    </script>
+</body>
+</html>

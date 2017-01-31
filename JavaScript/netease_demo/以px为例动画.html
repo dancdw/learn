@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Javascript动画 px 为例</title>
+    <style type="text/css">
+        *{
+            margin:0px;
+            padding:0px;
+        }
+        #parent{
+            height: 500px;
+            border: 1px solid red;
+            position: relative;
+        }
+        .son{
+            width: 200px;
+            height: 200px;
+            background: green;
+            position: absolute;
+        }
+    </style>
+</head>
+<body>
+    <div id="parent">
+        <div class="son"></div>
+    </div>
+    <script type="text/javascript">
+        var getStyle = function(elem, attr) {
+            return window.getComputedStyle(elem)[attr];
+        }
+        var elem = document.getElementsByClassName("son")[0];
+        var maxOffsetL = parseFloat(getStyle(elem.parentNode, "width")) - parseFloat(getStyle(elem, "width"));
+        var maxOffsetY = parseFloat(getStyle(elem.parentNode, "height")) - parseFloat(getStyle(elem, "height"));
+        var animation = function(elem, attr, from, to) {
+            var distance = Math.abs( to - from ); // 总距离
+            var direction = ( to - from ) / distance; // 方向
+            var stepLength = distance / 100; // 步长
+            var offset = 0; // 偏移量
+            var step = function() {
+                var tempOffset = stepLength + offset; // 当前偏移量 + 步长
+                if(tempOffset < distance) { // 未到达终点
+                    elem.style[attr] = from + tempOffset * direction + "px"; // 开始距离 + 偏移量
+                    offset = tempOffset;
+                } else {
+                    elem.style[attr] = to + "px";
+                    clearInterval(interval);
+                }
+            }
+            elem.style[attr] = from + "px";
+            var interval = setInterval(step, 10);
+        }
+        animation(elem, "left", 0, maxOffsetL);
+    </script>
+</body>
+</html>

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Javascript动画 px 为例</title>
+    <style>
+        .demo select{width:200px;margin-right:10px;}
+    </style>
+</head>
+<body>
+    <form class="demo" name="demoForm">
+      <select name="chapter0">
+        <option>请选择章目录0</option>
+      </select>
+      <select name="chapter1">
+        <option>请选择节目录1</option>
+      </select>
+      <select name="chapter2">
+        <option>请选择节目录2</option>
+      </select>
+      <select name="chapter3">
+        <option>请选择节目录3</option>
+      </select>
+      <input type="" name="" />
+    </form>
+    <script type="text/javascript">
+
+    var selector = [
+        {
+            text:'第一级',
+            value:'1',
+            list:[
+                {
+                    text:'第二级',
+                    value:'1.1',
+                    list:[
+                        {
+                            text:'第三级',
+                            value:'1.1.1',
+                            list:[
+                                {
+                                    text:'第四级',
+                                    value:'1.1.1.1',
+                                    list:[]
+                                },
+                                {
+                                    text:'第四级',
+                                    value:'1.1.1.2',
+                                    list:[]
+                                },
+                            ]
+                        },
+                        {
+                            text:'第三级',
+                            value:'1.1.2',
+                            list:[
+                                {
+                                    text:'第四级',
+                                    value:'1.1.2.1',
+                                    list:[]
+                                },
+                                {
+                                    text:'第四级',
+                                    value:'1.1.2.2',
+                                    list:[]
+                                },
+                            ]
+                        },
+                    ]
+                },
+                {
+                    text:'第二级',
+                    value:'1.2',
+                    list:[
+                        {
+                            text:'第三级',
+                            value:'1.2.1',
+                            list:[
+                                {
+                                    text:'第四级',
+                                    value:'1.2.1.1',
+                                    list:[]
+                                },
+                                {
+                                    text:'第四级',
+                                    value:'1.2.1.2',
+                                    list:[]
+                                },
+                            ]
+                        },
+                        {
+                            text:'第三级',
+                            value:'1.1.2',
+                            list:[
+                                {
+                                    text:'第四级',
+                                    value:'1.1.2.1',
+                                    list:[]
+                                },
+                                {
+                                    text:'第四级',
+                                    value:'1.1.2.2',
+                                    list:[]
+                                },
+                            ]
+                        },
+                    ]
+                },
+            ]
+        },
+        {
+            text:'第一级',
+            value:'2',
+            list:[
+                {
+                    text:'第二级',
+                    value:'2.1',
+                    list:[
+                        {
+                            text:'第三级',
+                            value:'2.1.1',
+                            list:[
+                                {
+                                    text:'第四级',
+                                    value:'2.1.1.1',
+                                    list:[]
+                                },
+                                {
+                                    text:'第四级',
+                                    value:'2.1.1.2',
+                                    list:[]
+                                },
+                            ]
+                        },
+                        {
+                            text:'第三级',
+                            value:'2.1.2',
+                            list:[
+                                {
+                                    text:'第四级',
+                                    value:'2.1.2.1',
+                                    list:[]
+                                },
+                                {
+                                    text:'第四级',
+                                    value:'2.1.2.2',
+                                    list:[]
+                                },
+                            ]
+                        },
+                    ]
+                },
+                {
+                    text:'第二级',
+                    value:'2.2',
+                    list:[
+                        {
+                            text:'第三级',
+                            value:'2.2.1',
+                            list:[
+                                {
+                                    text:'第四级',
+                                    value:'2.2.1.1',
+                                    list:[]
+                                },
+                                {
+                                    text:'第四级',
+                                    value:'2.2.1.2',
+                                    list:[]
+                                },
+                            ]
+                        },
+                        {
+                            text:'第三级',
+                            value:'2.1.2',
+                            list:[
+                                {
+                                    text:'第四级',
+                                    value:'2.1.2.1',
+                                    list:[]
+                                },
+                                {
+                                    text:'第四级',
+                                    value:'2.1.2.2',
+                                    list:[]
+                                },
+                            ]
+                        },
+                    ]
+                },
+            ]
+        },
+    ]
+    
+    var chapter0 = document.forms.demoForm.chapter0;
+    var chapter1 = document.forms.demoForm.chapter1;
+    var chapter2 = document.forms.demoForm.chapter2;
+    var chapter3 = document.forms.demoForm.chapter3;
+    var selectList = [chapter0, chapter1, chapter2, chapter3];
+
+    
+    var cascade = function(selectList, data){
+        for(var j = 0; j < selectList.length; j++) {
+            if(!!selectList[j] && selectList[j].nodeName == "SELECT") {
+                for(var i = 0; i < data.length; i++) {
+                    var opt = new Option(data[i].text, data[i].value);
+                    opt.dataset.list = JSON.stringify(data[i]["list"]);
+                    opt.dataset.level = j;
+                    selectList[j].add(opt);
+                }
+                selectList[j].addEventListener('change', function(e) {
+                    var e = e || window.event;
+                    var data = JSON.parse(e.target[e.target.selectedIndex].dataset.list);
+
+                    cascade(selectList, data);
+                });
+            }
+            break;
+        }
+    }
+    cascade(selectList, selector);
+    // console.log(form.length);
+    </script>
+</body>
+</html>
