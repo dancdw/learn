@@ -1,3 +1,8 @@
 <h1>{{title}}</h1>
-<a routerLink="/heroes">Heroes</a><!-- RouterLink 导航到哪里 -->
-<router-outlet></router-outlet><!-- RouterOutLet 应用导航时，会显示激活的组件 -->
+<nav>
+    <!-- RouterLink 导航到哪里 -->
+    <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a> <!-- routerLinkActive 激活组件时添加 active 的 class 属性 -->
+    <a routerLink="/heroes" routerLinkActive="active">Heroes</a>
+</nav>
+<!-- RouterOutLet 应用导航时，会显示激活的组件 -->
+<router-outlet></router-outlet>

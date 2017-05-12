@@ -1,3 +1,8 @@
-<p>
-  dashboard works!
-</p>
+<h3>Top Heroes</h3>
+<div class="grid grid-pad">
+    <a *ngFor="let hero of heroes"  [routerLink]="['/detail', hero.id]"  class="col-1-4"><!-- routerLink 数组参数：元素 1 为目标路由，元素 2 为路由参数 -->
+        <div class="module hero">
+            <h4>{{hero.name}}</h4>
+        </div>
+    </a>
+</div>

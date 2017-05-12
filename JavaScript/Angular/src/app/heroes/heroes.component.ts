@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { Hero } from '../../services/hero/hero';
 import { HeroService } from '../../services/hero/hero.service';
@@ -15,7 +16,7 @@ export class HeroesComponent implements OnInit {
 
   	selectedHero: Hero; // 默认被选中的英雄
 
-  	constructor(private heroService: HeroService) {}
+  	constructor(private heroService: HeroService, private router: Router,) {}
 
   	// 初始化
 	ngOnInit(): void {
@@ -31,4 +32,9 @@ export class HeroesComponent implements OnInit {
 	getHeroes(): void {
     		this.heroService.getHeroesSlowly().then(heroes => this.heroes = heroes); // 订阅一个事件
   	}
+
+     // 前往英雄详情
+     gotoDetail(): void {
+          this.router.navigate(['/detail', this.selectedHero.id]); // navigate 与 routerLink 功能一样
+     }
 }

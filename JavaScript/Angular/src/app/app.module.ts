@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
-import { RouterModule }   from '@angular/router';
+import { AppRoutingModule }     from './app-routing.module';
 
 import { HeroService } from '../services/hero/hero.service';
 
@@ -24,16 +24,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
     BrowserModule,
     FormsModule,
     HttpModule,
-    RouterModule.forRoot([ // 应用根部配置路由
-      {
-        path: 'heroes', // url 地址
-        component: HeroesComponent, // 所需组件
-      },
-      {
-        path: 'dashboard',
-        component: DashboardComponent
-      },
-    ]),
+    AppRoutingModule
   ],
   providers: [HeroService],
   bootstrap: [AppComponent]
