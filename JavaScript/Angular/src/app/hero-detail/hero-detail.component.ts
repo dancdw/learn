@@ -28,6 +28,12 @@ export class HeroDetailComponent implements OnInit {
 	    .subscribe(hero => this.hero = hero); // 订阅事件
 	}
 
+	// 更新记录
+	save(): void {
+	  this.heroService.update(this.hero)
+	    .then((hero) => this.goBack());
+	}
+
 	// 返回上一个路由
 	goBack(): void {
 	  this.location.back();

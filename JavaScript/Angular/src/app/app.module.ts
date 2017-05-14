@@ -5,6 +5,10 @@ import { HttpModule } from '@angular/http';
 
 import { AppRoutingModule }     from './app-routing.module';
 
+// 导入用于加载和配置内存中的web api
+import { InMemoryWebApiModule } from 'angular-in-memory-web-api';
+import { InMemoryDataService }  from '../services/hero/in-memory-data.service';
+
 import { HeroService } from '../services/hero/hero.service';
 
 import { AppComponent } from './app.component';
@@ -24,7 +28,8 @@ import { DashboardComponent } from './dashboard/dashboard.component';
     BrowserModule,
     FormsModule,
     HttpModule,
-    AppRoutingModule
+    AppRoutingModule,
+    InMemoryWebApiModule.forRoot(InMemoryDataService),
   ],
   providers: [HeroService],
   bootstrap: [AppComponent]

@@ -23,10 +23,32 @@ export class HeroesComponent implements OnInit {
     		this.getHeroes();
   	}
   	
-  	// 点击一个英雄时触发
+  	// 显示默认英雄
   	onSelect(hero: Hero): void {
   		this.selectedHero = hero;
 	}
+
+     // 删除英雄
+     delete(hero: Hero): void {
+          this.heroService
+          .delete(hero.id)
+          .then(() => {
+            this.heroes = this.heroes.filter(h => h !== hero);
+            if (this.selectedHero === hero) { this.selectedHero = null; }
+          });
+     }
+
+     // 添加英雄
+     add(name: string): void {
+          name = name.trim();
+          if (!name) { return; }
+
+          this.heroService.create(name)
+            .then(hero => {
+              this.heroes.push(hero);
+              this.selectedHero = null;
+          });
+     }
 
 	// 获取 hero 数据
 	getHeroes(): void {
