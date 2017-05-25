@@ -1,5 +1,5 @@
 <div id="search-component">
-    <h4>Hero Search</h4>
+    <h4>英雄查询</h4>
     <input #searchBox id="search-box" (keyup)="search(searchBox.value)" />
     <div>
         <div *ngFor="let hero of heroes | async" (click)="gotoDetail(hero)" class="search-result"><!-- async 将订阅 Observable 观察对象并转换为数据数组  -->

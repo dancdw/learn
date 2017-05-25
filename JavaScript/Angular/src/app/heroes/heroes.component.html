@@ -1,9 +1,9 @@
 <h2>{{title}}</h2>
 <div>
-    <label>Hero name:</label>
+    <label>英雄的名字:</label>
     <input #heroName />
     <button (click)="add(heroName.value); heroName.value=''">
-        Add
+        添加
     </button>
 </div>
 <ul class="heroes">
@@ -15,7 +15,7 @@
 </ul>
 <div *ngIf="selectedHero">
     <h2>
-    {{selectedHero.name | uppercase}} is my hero
+    我是超级英雄：{{selectedHero.name | uppercase}}
   </h2>
-    <button (click)="gotoDetail()">View Details</button>
+    <button (click)="gotoDetail()">查看详情</button>
 </div>

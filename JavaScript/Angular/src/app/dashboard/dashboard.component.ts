@@ -7,6 +7,8 @@ import { HeroService } from '../../services/hero/hero.service';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
+
+// 首页模块组件
 export class DashboardComponent implements OnInit {
 
   heroes: Hero[] = [];

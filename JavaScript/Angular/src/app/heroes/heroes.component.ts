@@ -11,7 +11,7 @@ import { HeroService } from '../../services/hero/hero.service';
 })
 
 export class HeroesComponent implements OnInit {
-	title = 'My Heroes';
+	title = '所有的超级英雄';
   	heroes: Hero[];
 
   	selectedHero: Hero; // 默认被选中的英雄
@@ -33,7 +33,7 @@ export class HeroesComponent implements OnInit {
           this.heroService
           .delete(hero.id)
           .then(() => {
-            this.heroes = this.heroes.filter(h => h !== hero);
+            this.heroes = this.heroes.filter(h => h !== hero); // 数据过滤，当前对象 与 null 比对
             if (this.selectedHero === hero) { this.selectedHero = null; }
           });
      }

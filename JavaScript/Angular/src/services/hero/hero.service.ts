@@ -18,7 +18,7 @@ export class HeroService {
 	  const url = `${this.heroesUrl}/${id}`;
 	  return this.http.delete(url, {headers: this.headers}) // delete 删除记录并告诉浏览器接收数据的格式
 	    .toPromise() // 转换为承诺（Promise）
-	    .then(() => null)
+	    .then(() => null) // 
 	    .catch(this.handleError);
 	}
 
@@ -35,7 +35,7 @@ export class HeroService {
 	  const url = `${this.heroesUrl}/${hero.id}`;
 	  return this.http.put(url, JSON.stringify(hero), {headers: this.headers}) // put 更新记录并告诉浏览器接收数据的格式
 	    .toPromise() // 转换成承诺（Promise）
-	    .then(() => hero)
+	    .then(() => hero) // 啥都不干，返回原数据
 	    .catch(this.handleError);
 	}
 
