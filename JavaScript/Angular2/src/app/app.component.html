@@ -1,0 +1,8 @@
+<h1>{{title}}</h1>
+<nav>
+    <!-- RouterLink 导航到哪里 -->
+    <a routerLink="/displaydata" routerLinkActive="active">显示数据</a>
+    <a routerLink="/clickme" routerLinkActive="active">用户输入</a> <!-- routerLinkActive 激活组件时添加 active 的 class 属性 -->
+</nav>
+<!-- RouterOutLet 应用导航时，会显示激活的组件 -->
+<router-outlet></router-outlet>

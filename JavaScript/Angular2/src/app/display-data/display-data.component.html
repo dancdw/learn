@@ -1,0 +1,12 @@
+<h1>{{title}}</h1>
+<!-- {{}} 插值表达式 -->
+<h2>My favorite hero is: {{myHero.name}}</h2>
+<p>Heroes:</p>
+<ul>
+    <!-- 迭代模板 -->
+    <li *ngFor="let hero of heroes">
+        {{ hero.name }}
+        <!-- 模板变量 -->
+    </li>
+</ul>
+<p *ngIf="heroes.length > 3">There are many heroes!</p>
