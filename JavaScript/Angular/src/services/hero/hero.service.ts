@@ -8,11 +8,10 @@ import { Hero } from './hero';
 
 export class HeroService {
 	private heroesUrl = 'api/heroes';  // 接口 url
+  	private headers = new Headers({'Content-Type': 'application/json'});
 
 
   	constructor(private http: Http) { }
-
-  	private headers = new Headers({'Content-Type': 'application/json'});
 
   	// 删除记录
   	delete(id: number): Promise<void> {
