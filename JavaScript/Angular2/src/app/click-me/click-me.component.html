@@ -1,3 +1,19 @@
-<p>
-  click-me works!
-</p>
+<!--(绑定的目标属性或事件) = "模板语句"，this 为当前组件对象-->
+<button (click)="this.onClickMe(this.clickbox)" #clickbox>Click me!</button>
+<!-- 规范形式 -->
+<button on-click="this.onClickMe(this.clickbox)">Click me!</button>
+
+{{clickMessage}}
+<br/>
+<!-- $event 当前事件对象，#box 模板引用变量 -->
+<input #box (keyup)="onKey(box.value)">
+<p>{{values}}</p>
+<!-- keyup.enter 当用户按下 enter 时触发事件 -->
+<input #enterbox (keyup.enter)="update(enterbox.value)" (blur)="update(enterbox.value)">
+<p>{{value}}</p>
+<!-- 综合例子 -->
+<input #newHero (keyup.enter)="addHero(newHero.value)" (blur)="addHero(newHero.value); newHero.value='' ">
+<button (click)="addHero(newHero.value)">Add</button>
+<ul>
+    <li *ngFor="let hero of heroes">{{hero}}</li>
+</ul>

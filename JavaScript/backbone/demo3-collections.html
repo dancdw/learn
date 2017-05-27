@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>the5fire-backbone-model</title>
+    <meta charset="utf-8">
+</head>
+
+<body>
+</body>
+<script src="http://the5fireblog.b0.upaiyun.com/staticfile/jquery-1.10.2.js"></script>
+<script src="http://the5fireblog.b0.upaiyun.com/staticfile/underscore.js"></script>
+<script src="http://the5fireblog.b0.upaiyun.com/staticfile/backbone.js"></script>
+<script>
+(function($) {
+    var Book = Backbone.Model.extend({
+        defaults: {
+            title: 'default' // 设置默认属性
+        },
+        initialize: function() {}
+    });
+
+    var BookShelf = Backbone.Collection.extend({
+        model: Book,
+        url: '/test.json'
+    });
+
+    var book1 = new Book({
+        title: 'book1'
+    });
+    var book2 = new Book({
+        title: 'book2'
+    });
+    var book3 = new Book({
+        title: 'book3'
+    });
+
+    // 创建一个 Book 的集合
+    //var bookShelf = new BookShelf([book1, book2, book3]);
+    var bookShelf = new BookShelf;
+
+    // 添加 book 对象
+    bookShelf.add(book1);
+    bookShelf.add(book2);
+    bookShelf.add(book3);
+
+    // 创建 book 对象
+    var onebook = bookShelf.create({
+        title: "I'm coming",
+    });
+
+    // 移除 book 对象
+    bookShelf.remove(book3);
+
+    // 基于underscore 库使用 each 方法获取 collection 中的数据
+    bookShelf.each(function(book) {
+        // console.log(book);
+        // console.log(book.get('title'));
+    });
+
+
+    // 绑定 reset 重绘事件
+    bookShelf.bind('reset', function() {
+        bookShelf.each(function(book) {
+            document.writeln(book.get('title'));
+        });
+    });
+
+    // 向服务器获取数据
+    bookShelf.fetch({
+        reset: true, // 集合重绘
+        success: function(collection, response, options) {
+            collection.each(function(book) {
+                console.log(book.get('title'));
+            });
+        },
+        error: function(collection, response, options) {
+            console.log('error');
+        }
+    });
+})(jQuery);
+</script>
+
+</html>

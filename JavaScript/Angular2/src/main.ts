@@ -8,4 +8,5 @@ if (environment.production) {
   enableProdMode();
 }
 
+// 创建应用级注入器
 platformBrowserDynamic().bootstrapModule(AppModule);

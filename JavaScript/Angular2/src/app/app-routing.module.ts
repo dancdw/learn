@@ -3,6 +3,9 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { ClickMeComponent } from './click-me/click-me.component';
 import { DisplayDataComponent } from './display-data/display-data.component';
+import { FormComponent } from './form/form.component';
+import { TemplateComponent } from './template/template.component';
+import { AnimationComponent } from './animation/animation.component';
 
 const routes: Routes = [
   {
@@ -17,6 +20,18 @@ const routes: Routes = [
   {
     path: 'displaydata',
     component: DisplayDataComponent
+  },
+  {
+    path: 'form',
+    component: FormComponent
+  },
+  {
+    path: 'template',
+    component: TemplateComponent
+  },
+  {
+    path: 'animation',
+    component: AnimationComponent
   },
 ];
 

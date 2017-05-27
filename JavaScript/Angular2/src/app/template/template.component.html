@@ -1,0 +1,59 @@
+<!-- 1.模板表达式：先求值再赋值
+	 2.模板表达式优先级：模板变量、指令变量、组件变量
+<p>The sum of 1 + 1 is {{1 + 1}}</p>
+
+1.模板语句：支持 “=” “，”“；”
+	 2.模板语句优先级：模板变量、组件变量
+<button (click)="onSave($event)">Save</button>
+<button *ngFor="let hero of heroes" (click)="deleteHero(hero)">{{hero.name}}</button>
+<form #heroForm (ngSubmit)="onSubmit(heroForm)"> ... </form>
+
+Angular 的 property
+<img [src]="heroImageUrl">
+<hero-detail [hero]="currentHero"></hero-detail>
+<div [ngClass]="{special: isSpecial}"></div>
+
+事件
+<button (click)="onSave()">Save</button>
+<hero-detail (deleteRequest)="deleteHero()"></hero-detail>
+<div (myClick)="clicked=$event" clickable>click me</div>
+
+双向绑定
+<input [(ngModel)]="name">
+
+HTML 的 Attribute
+<button [attr.aria-label]="help">help</button>
+
+HTML 的 ClassName
+<div [class.special]="isSpecial">Special</div>
+
+HTML 的 Style
+<button [style.color]="isSpecial ? 'red' : 'green'">
+
+字符串绑定推荐采用插值表达式，除此以外采用属性绑定
+<p><img src="{{heroImageUrl}}"> is the <i>interpolated</i> image.</p>
+<p><img [src]="heroImageUrl"> is the <i>property bound</i> image.</p>
+<p><span>"{{title}}" is the <i>interpolated</i> title.</span></p>
+<p>"<span [innerHTML]="title"></span>" is the <i>property bound</i> title.</p>
+
+订阅事件 deleteRequest，传递事件回调函数 deleteHero
+<hero-detail (deleteRequest)="deleteHero($event)" [hero]="currentHero"></hero-detail>
+
+组件间双向数据绑定：属性绑定[输入] + 事件绑定[输出]
+<my-sizer [(size)]="fontSizePx"></my-sizer>
+<my-sizer [size]="fontSizePx" (sizeChange)="fontSizePx=$event"></my-sizer>
+
+<input [(ngModel)]="currentHero.name">
+<input [ngModel]="currentHero.name" (ngModelChange)="currentHero.name=$event">
+
+双向数据绑定自定义
+<input [ngModel]="currentHero.name" (ngModelChange)="setUppercaseName($event)">
+
+| 使用管道
+<div>Title through a pipe chain:{{title | uppercase | lowercase}}</div>
+
+?. 安全导航符，不至于报错
+The null hero's name is {{nullHero?.name}}
+
+index 为索引值，还有如 last、even、odd
+<div *ngFor="let hero of heroes; let i=index">{{i + 1}} - {{hero.name}}</div> -->

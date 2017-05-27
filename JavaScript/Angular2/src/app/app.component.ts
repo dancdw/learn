@@ -1,5 +1,6 @@
 import { Component, OnInit  } from '@angular/core';
 
+// @Component、@Directive、@Pipe 都是@Injectable 的子类型
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
