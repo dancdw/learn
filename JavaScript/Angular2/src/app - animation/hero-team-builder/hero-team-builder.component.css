@@ -1,0 +1,21 @@
+.buttons {
+    text-align: center;
+}
+
+button {
+    padding: 1.5em 3em;
+}
+
+.columns {
+    display: flex;
+    flex-direction: row;
+}
+
+.column {
+    flex: 1;
+    padding: 10px;
+}
+
+.column p {
+    min-height: 6em;
+}
