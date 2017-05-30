@@ -6,18 +6,17 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./template.component.css']
 })
 export class TemplateComponent implements OnInit {
-  // deleteRequest = new EventEmitter<Hero>();
-  // @Input()  size: number | string;
-  // @Output() sizeChange = new EventEmitter<number>();
-  
+
   // dec() { this.resize(-1); }
   // inc() { this.resize(+1); }
-  // resize(delta: number) {
+  // resize(delta: number) {}
 
+  // @Input()  size: number | string;
+  // @Output() sizeChange = new EventEmitter<number>();
   //   this.size = Math.min(40, Math.max(8, +this.size + delta));
   //   this.sizeChange.emit(this.size);
-    
-  // }
+  
+  // deleteRequest = new EventEmitter<Hero>();   
   // delete() {
 	 //  this.deleteRequest.emit(this.hero);
   // }
