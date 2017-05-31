@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { HeroTeamBuilderComponent } from './hero-team-builder.component';
+import { WikiComponent } from './wiki.component';
 
-describe('HeroTeamBuilderComponent', () => {
-  let component: HeroTeamBuilderComponent;
-  let fixture: ComponentFixture<HeroTeamBuilderComponent>;
+describe('WikiComponent', () => {
+  let component: WikiComponent;
+  let fixture: ComponentFixture<WikiComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ HeroTeamBuilderComponent ]
+      declarations: [ WikiComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(HeroTeamBuilderComponent);
+    fixture = TestBed.createComponent(WikiComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

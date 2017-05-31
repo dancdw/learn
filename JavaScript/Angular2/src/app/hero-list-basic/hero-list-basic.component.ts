@@ -1,38 +1,37 @@
 import { Component,Input, OnInit } from '@angular/core';
-import {
-  trigger,
-  state,
-  style,
-  animate,
-  transition
-} from '@angular/animations';
+import { HeroService } from '../../service/http/hero.service';
 
-import { HeroService } from '../../service/animation/hero.service';
+import { Hero } from '../../service/http/hero';
 
 @Component({
   selector: 'app-hero-list-basic',
   templateUrl: './hero-list-basic.component.html',
-  styleUrls: ['./hero-list-basic.component.css'],
-  animations: [
-    trigger('heroState', [
-      state('inactive', style({
-        backgroundColor: '#eee',
-        transform: 'scale(1)'
-      })),
-      state('active',   style({
-        backgroundColor: '#cfd8dc',
-        transform: 'scale(1.1)'
-      })),
-      transition('inactive => active', animate('100ms ease-in')),
-      transition('active => inactive', animate('100ms ease-out'))
-    ])
-  ]
+  styleUrls: ['./hero-list-basic.component.css']
 })
 export class HeroListBasicComponent implements OnInit {
-  @Input() heroes: HeroService;
-  constructor() { }
+  errorMessage: string;
+  heroes: Hero[];
+  mode = 'Observable';
 
-  ngOnInit() {
+  constructor (private heroService: HeroService) {}
+
+  ngOnInit() { this.getHeroes(); }
+
+  // 获取所有英雄，订阅可观察对象，指定成功和错误事件
+  getHeroes() {
+    this.heroService.getHeroes()
+                     .subscribe(
+                       heroes => this.heroes = heroes,
+                       error =>  this.errorMessage = <any>error);
+  }
+
+  // 添加英雄，订阅可观察对象，指定成功和错误事件
+  addHero(name: string) {
+    if (!name) { return; }
+    this.heroService.create(name)
+                     .subscribe(
+                       hero  => this.heroes.push(hero),
+                       error =>  this.errorMessage = <any>error);
   }
 
 }
