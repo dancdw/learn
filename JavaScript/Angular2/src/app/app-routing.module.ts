@@ -1,17 +1,13 @@
 import { NgModule }             from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { HeroTeamBuilderComponent } from './hero-team-builder/hero-team-builder.component';
+
+import { CrisisListComponent } from './crisis-list/crisis-list.component';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 
 const routes: Routes = [
-  {
-    path: '',
-    redirectTo: '/clickme', // 重定向
-    pathMatch: 'full'
-  },
-  {
-    path: 'clickme', // url 地址
-    component: HeroTeamBuilderComponent, // 所需组件
-  },
+  { path: 'crisis-center', component: CrisisListComponent },
+  { path: '',   redirectTo: '/heroes', pathMatch: 'full' }, // 重定向 prefix前缀
+  { path: '**', component: PageNotFoundComponent } // 匹配所有
 ];
 
 @NgModule({
