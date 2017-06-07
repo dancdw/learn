@@ -16,15 +16,16 @@
     <script src="http://the5fireblog.b0.upaiyun.com/staticfile/backbone.js"></script>
     <script>
     (function($) {
+        // 创建一个 World 模型
         World = Backbone.Model.extend({
-            //创建一个World的对象，拥有name属性
+            //创建一个 World 的对象，拥有 name 属性
             name: null
         });
 
+        // 创建一个 Worlds 对象的集合
         Worlds = Backbone.Collection.extend({
-            //World对象的集合
             initialize: function(models, options) {
-                console.log(this ,models, options);
+                // 监听 add 事件
                 this.bind("add", options.view.addOneWorld);
             }
         });
@@ -32,14 +33,14 @@
         AppView = Backbone.View.extend({
             el: $("body"),
             initialize: function() {
-                //构造函数，实例化一个World集合类
-                //并且以字典方式传入AppView的对象
+                // 构造函数，实例化一个 World 集合类
+                // 并且以字典方式传入 AppView 的对象
                 this.worlds = new Worlds(null, {
                     view: this
                 })
             },
             events: {
-                //事件绑定，绑定Dom中id为check的元素
+                // 事件绑定，绑定 Dom 中 id 为 check 的元素
                 "click #check": "checkIn",
             },
             checkIn: function() {
@@ -54,7 +55,7 @@
                 $("#world-list").append("<li>这里是来自 <b>" + model.get('name') + "</b> 星球的问候：hello world！</li>");
             }
         });
-        //实例化AppView
+        // 实例化AppView
         var appview = new AppView;
     })(jQuery);
     </script>
