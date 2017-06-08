@@ -5,23 +5,20 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppRoutingModule }     from './app-routing.module';
 import { HerosModule }     from './heros/heros.module';
-// console.log(HerosModule)
+import { CrisisCenterModule }     from './crisis-center/crisis-center.module';
+
  // 使用 HTTP 服务
 import { HttpModule,JsonpModule } from '@angular/http';
 
-// import { HeroService } from '../service/router/hero.service';
-// import { WikipediaService } from '../service/router/wikipedia.service';
-
 import { AppComponent } from './app.component';
-import { CrisisListComponent } from './crisis-list/crisis-list.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
-
+import { ComposeMessageComponent } from './compose-message/compose-message.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    CrisisListComponent,
     PageNotFoundComponent,
+    ComposeMessageComponent,
   ],
   imports: [
     BrowserAnimationsModule,
@@ -30,8 +27,8 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
     HttpModule,
     JsonpModule,
     HerosModule,
+    CrisisCenterModule,
     AppRoutingModule, // 必须是最后一个
-    // InMemoryWebApiModule.forRoot(InMemoryDataService),
   ],
   // 注册一个应用中唯一的提供商为其提供服务
   providers: [ 

@@ -25,7 +25,7 @@ export class HeroListComponent implements OnInit {
   // }
 
   ngOnInit(): void {
-
+    
     // 路由参数可观察对象
     this.route.params
       .switchMap((params: Params) => {
@@ -34,10 +34,11 @@ export class HeroListComponent implements OnInit {
       }).subscribe(heroes => this.heroes = heroes);
   }
 
-
+  // 查看英雄详情
   onSelect(hero: Hero): void {
     this.router.navigate(['/hero', hero.id]);
   }
   
+  // 判断是否是选中的英雄
   isSelected(hero: Hero) { return hero.id === this.selectedId; }
 }

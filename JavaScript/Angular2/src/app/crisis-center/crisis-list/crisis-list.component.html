@@ -1,0 +1,7 @@
+<p>Welcome to the Crisis List</p>
+<ul class="heroes">
+    <li *ngFor="let crisis of crises | async" (click)="onSelect(crisis)" [class.selected]="isSelected(crisis)">
+        <span class="badge">{{ crisis.id }}</span> {{ crisis.name }}
+    </li>
+</ul>
+<router-outlet></router-outlet>

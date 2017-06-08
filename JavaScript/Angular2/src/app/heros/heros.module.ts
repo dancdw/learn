@@ -12,7 +12,7 @@ import { WikipediaService } from '../../service/router/wikipedia.service';
 import { HeroListComponent } from './hero-list/hero-list.component';
 import { HeroDetailComponent } from './hero-detail/hero-detail.component';
 
-// 导入子模块
+// 导入路由模块
 import { HerosRoutingModule } from './heros-routing.module';
 
 @NgModule({
