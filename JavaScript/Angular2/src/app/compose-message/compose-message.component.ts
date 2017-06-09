@@ -34,6 +34,7 @@ export class ComposeMessageComponent implements OnInit {
   }
 
   closePopup() {
+    // 移除第二个路由
     this.router.navigate([{ outlets: { popup: null }}]);
   }
 

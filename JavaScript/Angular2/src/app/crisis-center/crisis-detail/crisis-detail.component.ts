@@ -4,7 +4,7 @@ import { ActivatedRoute, Router, Params } from '@angular/router';
 import { slideInDownAnimation } from '../../animations';
 
 import { Crisis, CrisisService } from '../../../service/router/crisis.service';
-// import { DialogService }  from '../dialog.service';
+import { DialogService }  from '../../../service/router/dialog.service';
 
 @Component({
   selector: 'app-crisis-detail',
@@ -25,8 +25,8 @@ export class CrisisDetailComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private service: CrisisService
-    // public dialogService: DialogService
+    private service: CrisisService,
+    public dialogService: DialogService
   ) {}
 
   ngOnInit() {
@@ -44,6 +44,16 @@ export class CrisisDetailComponent implements OnInit {
       // });
   }
 
+  canDeactivate(): Promise<boolean> | boolean {
+    // 如果没有危机或危机不变，允许同步导航（“true”）
+    if (!this.crisis || this.crisis.name === this.editName) {
+      return true;
+    }
+    // 否则请用户对话服务并返回
+    // 当用户决定时解决为真或假的承诺
+    return this.dialogService.confirm('Discard changes?');
+  }  
+
   cancel() {
     this.gotoCrises();
   }
@@ -53,12 +63,7 @@ export class CrisisDetailComponent implements OnInit {
     this.gotoCrises();
   }
 
-  canDeactivate(): Promise<boolean> | boolean {
-    if (!this.crisis || this.crisis.name === this.editName) {
-      return true;
-    }
-    // return this.dialogService.confirm('Discard changes?');
-  }
+  
   gotoCrises() {
     let crisisId = this.crisis ? this.crisis.id : null;
     this.router.navigate(['../', { id: crisisId, foo: 'foo' }], { relativeTo: this.route });

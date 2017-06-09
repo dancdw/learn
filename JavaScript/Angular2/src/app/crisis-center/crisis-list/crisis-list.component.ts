@@ -36,10 +36,6 @@ export class CrisisListComponent implements OnInit {
 
   onSelect(crisis: Crisis) {
     this.selectedId = crisis.id;
-    // this.route.data
-    //   .subscribe((data) => {
-    //     console.log(data)
-    //   });
     this.router.navigate([crisis.id], { relativeTo: this.route });
   }
 

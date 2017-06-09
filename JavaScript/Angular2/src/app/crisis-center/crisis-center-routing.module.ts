@@ -1,16 +1,18 @@
 import { NgModule }             from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
+import { CrisisService } from '../../service/router/crisis.service';
 import { CrisisDetailResolver } from '../../service/router/crisis-detail-resolver.service';
+import { CanDeactivateGuardService } from '../../service/router/can-deactivate-guard.service';
 
 import { CrisisCenterHomeComponent } from './crisis-center-home/crisis-center-home.component';
 import { CrisisListComponent }       from './crisis-list/crisis-list.component';
 import { CrisisDetailComponent }     from './crisis-detail/crisis-detail.component';
 import { CrisisCenterComponent }     from './crisis-center.component';
 
-const crisisCenterRoutes: Routes = [
+const CrisisCenterRoutes: Routes = [
   {
-    path: 'crisis-center',
+    path: '',
     component: CrisisCenterComponent,
     children: [
       {
@@ -20,9 +22,8 @@ const crisisCenterRoutes: Routes = [
           {
             path: ':id',
             component: CrisisDetailComponent,
-            resolve: {
-              crisis: CrisisDetailResolver
-            }
+            resolve: { crisis: CrisisDetailResolver }, // 添加预先加载信息的守卫
+            canDeactivate: [CanDeactivateGuardService] // 添加离开路由的守卫
           },
           {
             path: '',
@@ -36,13 +37,15 @@ const crisisCenterRoutes: Routes = [
 
 @NgModule({
   imports: [
-    RouterModule.forChild(crisisCenterRoutes)
+    RouterModule.forChild(CrisisCenterRoutes)
   ],
   exports: [
     RouterModule
   ],
   providers: [ 
-    CrisisDetailResolver
+    CrisisService,
+    CrisisDetailResolver,
+    CanDeactivateGuardService
   ],
 })
 
