@@ -9,9 +9,6 @@ import { Component, OnInit  } from '@angular/core';
 
 // AppComponent 只处理导航（路由组件）
 export class AppComponent implements OnInit {
-
-	color: string = 'blue';
-
   	constructor() {}
 
   	// 初始化

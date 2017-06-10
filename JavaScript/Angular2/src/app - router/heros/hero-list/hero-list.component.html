@@ -6,10 +6,10 @@
     </li>
 </ul>
 <app-hero-detail [hero]="selectedHero"></app-hero-detail> -->
-<app-hero-add (addHero)="addHero($event)"></app-hero-add>
 <ul class="items">
-    <li *ngFor="let hero of (heroes | flyingHeroes)" [class.selected]="isSelected(hero)" (click)="onSelect(hero)">
+    <li *ngFor="let hero of heroes" [class.selected]="isSelected(hero)" (click)="onSelect(hero)">
         <span class="badge">{{hero.id}}</span> {{hero.name}}
     </li>
 </ul>
+
 <button routerLink="/sidekicks">Go to sidekicks</button>

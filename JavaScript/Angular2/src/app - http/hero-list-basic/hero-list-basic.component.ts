@@ -11,7 +11,6 @@ import { Hero } from '../../service/http/hero';
 export class HeroListBasicComponent implements OnInit {
   errorMessage: string;
   heroes: Hero[];
-  mode = 'Observable';
 
   constructor (private heroService: HeroService) {}
 

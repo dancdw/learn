@@ -43,13 +43,13 @@ private heroesUrl = 'api/heroes';  // URL to web API
   }
 
   // 创建一个英雄，返回 Http Response 类型的可观察对象
-  create(name: string): Observable<Hero> {
+  create(name: string, canFly?: boolean): Observable<Hero> {
 
     // 告诉服务器 body 中是 json 数据
     let headers = new Headers({ 'Content-Type': 'application/json' });
     let options = new RequestOptions({ headers: headers });
 
-    return this.http.post(this.heroesUrl, { name }, options)
+    return this.http.post(this.heroesUrl, { name, canFly }, options)
                     .map(this.extractData)
                     .catch(this.handleError);
   }
