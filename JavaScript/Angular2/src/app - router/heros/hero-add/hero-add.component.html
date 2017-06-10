@@ -1,0 +1,3 @@
+ <input type="checkbox" [(ngModel)]="canFly">
+<input type="text" #box (keyup.enter)="newHero(box.value); box.value=''" placeholder="hero name">
+<button (click)="newHero(box.value); box.value=''">newHero</button>

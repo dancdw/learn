@@ -17,6 +17,10 @@ import { AppComponent } from './app.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { ComposeMessageComponent } from './compose-message/compose-message.component';
 import { LoginComponent } from './login/login.component';
+import { HighlightDirective } from '../directives/highlight.directive';
+import { UnlessDirective } from '../directives/unless.directive';
+import { ExponentialStrengthPipe } from '../pipes/exponential-strength.pipe';
+import { FetchJsonPipe } from '../pipes/fetch-json.pipe';
 
 @NgModule({
   declarations: [
@@ -24,6 +28,10 @@ import { LoginComponent } from './login/login.component';
     PageNotFoundComponent,
     ComposeMessageComponent,
     LoginComponent,
+    HighlightDirective,
+    UnlessDirective,
+    ExponentialStrengthPipe,
+    FetchJsonPipe,
   ],
   imports: [
     BrowserAnimationsModule,

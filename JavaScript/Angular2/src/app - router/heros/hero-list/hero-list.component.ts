@@ -16,6 +16,7 @@ export class HeroListComponent implements OnInit {
   heroes: Hero[];
   selectedHero: Hero;
   selectedId: number;
+  canFly: boolean = false;
 
   constructor(private heroService: HeroService, private route: ActivatedRoute, private router: Router) { }
 
@@ -23,6 +24,14 @@ export class HeroListComponent implements OnInit {
   //   this.heroService.getHeroes()
   //     .subscribe(heroes => this.heroes = heroes);
   // }
+
+  // 添加英雄，订阅可观察对象
+  addHero(Hero) {
+    if (!Hero.name) { return; }
+    this.heroService.create(Hero.name, Hero.canFly)
+                     .subscribe(
+                       hero  => this.heroes.push(hero));
+  }
 
   ngOnInit(): void {
     
