@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
-// 06. 事件 => 
+// 05. 事件 => 
 
 class Toggle extends React.Component {
 

@@ -31,7 +31,7 @@ function Square(props) {
 //   }
 // }
 
-
+// 模板组件
 class Board extends React.Component {
 
   // constructor() {
@@ -51,7 +51,8 @@ class Board extends React.Component {
   //       xIsNext: !this.state.xIsNext,
   //   });
   // }
-
+  
+  // 渲染方块
   renderSquare(i) {
     return (
       <Square
@@ -94,6 +95,7 @@ class Board extends React.Component {
   }
 }
 
+// 游戏组件
 class Game extends React.Component {
   constructor() {
 

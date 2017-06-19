@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
-// 05. 状态和生命周期
+// 04. 状态和生命周期
 
 class Clock extends React.Component {
   constructor(props) {
@@ -21,7 +21,7 @@ class Clock extends React.Component {
     });
   }
 
-  // 安装
+  // 初始化
   componentDidMount() {
     this.timerID = setInterval(
       () => this.tick(),
