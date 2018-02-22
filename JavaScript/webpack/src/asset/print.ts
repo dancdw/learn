@@ -1,4 +1,4 @@
-import _ from 'lodash' // 导入外部模块
+import * as _ from 'lodash' // 导入外部模块
 
 export default function printMe() {
   // console.log('I get called from print.js!')
