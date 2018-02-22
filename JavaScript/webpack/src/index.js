@@ -8,7 +8,7 @@ function component() {
 
   // 使用脚本
   element.innerHTML = _.join(['Hello', 'webpack', '<br/>'], ' ')
-  btn.innerHTML = _.join(['Click me', 'and check the console!'])
+  btn.innerHTML = _.join(['Click me', 'and check the console,test!'])
   btn.onclick = printMe
 
   element.appendChild(btn)
