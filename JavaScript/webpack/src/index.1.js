@@ -9,6 +9,12 @@ function component() {
 
   // 使用脚本
   element.innerHTML = _.join(['Hello', 'webpack', JSON.stringify(Package)], ' ')
+  element.classList.add('hello')
+
+  // 使用图片
+  var myImg = new Image()
+  myImg.src = Img
+  // element.appendChild(myImg)
 
   return element;
 }
