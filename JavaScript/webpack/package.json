@@ -6,8 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "webpack --config webpack.prod.js --watch",
-    "build": "webpack --config webpack.prod.js --define process.env.NODE_ENV='production'",
-    "start": "webpack-dev-server --open --config config/webpack.dev.js --define process.env.NODE_ENV='development'",
+    "build": "webpack --config webpack.prod.js --env.NODE_ENV=Production --env.production",
+    "start": "webpack-dev-server --config config/webpack.dev.js --progress",
     "server": "node server.js"
   },
   "keywords": [],
