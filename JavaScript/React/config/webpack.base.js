@@ -13,12 +13,12 @@ module.exports = function(env) {
     },
     module: {
       rules: [
-        {
-          test: /\.tsx?$/,
-          include: path.resolve(__dirname, "../src"),
-          use: 'ts-loader',
-          exclude: /node_module/,
-        },
+        // {
+        //   test: /\.tsx?$/,
+        //   include: path.resolve(__dirname, "../src"),
+        //   use: 'ts-loader',
+        //   exclude: /node_module/,
+        // },
         {
           test: /\.css$/,
           include: path.resolve(__dirname, "../src"),
