@@ -7,9 +7,9 @@ module.exports = function(env) {
   return {
     context: __dirname,
     entry: {
-      app: '../src/index.tsx',
+      app: '../src/index.js',
       // print: './src/asset/print.js',
-      vendor: ['lodash', 'react', 'react-dom'],
+      vendor: ['lodash'],
     },
     module: {
       rules: [
@@ -19,6 +19,17 @@ module.exports = function(env) {
         //   use: 'ts-loader',
         //   exclude: /node_module/,
         // },
+        {
+          test: /\.js$/,
+          exclude: /node_module/,
+          include: path.resolve(__dirname, "../src"),
+          use: {
+            loader: 'babel-loader',
+            options: {
+              presets: ['babel-preset-react']
+            }
+          }
+        },
         {
           test: /\.css$/,
           include: path.resolve(__dirname, "../src"),

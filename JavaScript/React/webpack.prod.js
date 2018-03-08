@@ -16,7 +16,6 @@ module.exports = function(env) {
       new webpack.DefinePlugin({ // 设置环境变量，在 src 目录里使用
         'process.env.NODE_ENV': JSON.stringify(env.NODE_ENV)
       }),
-      new webpack.optimize.UglifyJsPlugin(),
       new HtmlWebpackPlugin({ // 生成 html 文件
         title: env.NODE_ENV,
         template: '../src/index.html',

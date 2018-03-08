@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "webpack --config webpack.prod.js --watch",
     "build": "webpack --config webpack.prod.js --env.NODE_ENV=production --env.production",
     "start": "webpack-dev-server --config config/webpack.dev.js --progress",
@@ -15,8 +15,9 @@
   "license": "ISC",
   "devDependencies": {
     "@types/lodash": "^4.14.104",
-    "@types/react": "^16.0.38",
-    "@types/react-dom": "^16.0.4",
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.4",
+    "babel-preset-react": "^6.24.1",
     "clean-webpack-plugin": "^0.1.18",
     "css-loader": "^0.28.9",
     "express": "^4.16.2",
