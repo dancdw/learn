@@ -9,7 +9,7 @@ module.exports = function(env) {
     entry: {
       app: '../src/index.js',
       // print: './src/asset/print.js',
-      vendor: ['lodash'],
+      vendor: ['lodash', 'react', 'react-dom'],
     },
     module: {
       rules: [
@@ -21,12 +21,12 @@ module.exports = function(env) {
         // },
         {
           test: /\.js$/,
-          exclude: /node_module/,
+          exclude: /(node_modules|bower_components)/,
           include: path.resolve(__dirname, "../src"),
           use: {
-            loader: 'babel-loader',
+            loader: 'babel-loader?cacheDirectory=true',
             options: {
-              presets: ['babel-preset-react']
+              presets: ['babel-preset-react'],
             }
           }
         },
