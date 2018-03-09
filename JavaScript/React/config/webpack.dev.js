@@ -1,10 +1,10 @@
-const merge = require('webpack-merge')
-const base = require('./webpack.base.js')
-const webpack = require('webpack')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-const path = require('path')
+const merge = require('webpack-merge');
+const base = require('./webpack.base.js');
+const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const path = require('path');
 
-process.env.NODE_ENV = 'development'
+process.env.NODE_ENV = 'development';
 
 module.exports = function(env) {
   return merge(base(env), {
@@ -21,9 +21,9 @@ module.exports = function(env) {
       }),
       new HtmlWebpackPlugin({ // 生成 html 文件
         title: process.env.NODE_ENV,
-        template: '../src/index.html',
+        template: '../public/index.html',
       }),
       // new webpack.NamedModulesPlugin(),
     ],
-  })
-}
+  });
+};

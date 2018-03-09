@@ -1,10 +1,10 @@
-const merge = require('webpack-merge')
-const base = require('./config/webpack.base.js')
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
-const CleanWebpackPlugin = require('clean-webpack-plugin')
-const webpack = require('webpack')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const merge = require('webpack-merge');
+const base = require('./config/webpack.base.js');
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
+const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = function(env) {
   return merge(base(env), {
@@ -18,7 +18,7 @@ module.exports = function(env) {
       }),
       new HtmlWebpackPlugin({ // 生成 html 文件
         title: env.NODE_ENV,
-        template: '../src/index.html',
+        template: '../public/index.html',
       }),
       // new webpack.HashedModuleIdsPlugin(),
       new webpack.optimize.CommonsChunkPlugin({ // 将第三方模块提取成新的 Chunk
@@ -33,5 +33,5 @@ module.exports = function(env) {
         // sourceMap: true,
       }),
     ],
-  })
-}
+  });
+};

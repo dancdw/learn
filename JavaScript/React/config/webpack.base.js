@@ -1,7 +1,7 @@
 // import path from "path"
-const path = require('path')
-const webpack = require('webpack')
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const path = require('path');
+const webpack = require('webpack');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = function(env) {
   return {
@@ -23,12 +23,20 @@ module.exports = function(env) {
           test: /\.js$/,
           exclude: /(node_modules|bower_components)/,
           include: path.resolve(__dirname, "../src"),
-          use: {
-            loader: 'babel-loader?cacheDirectory=true',
-            options: {
-              presets: ['babel-preset-react'],
-            }
-          }
+          use: [
+            {
+              loader: 'babel-loader?cacheDirectory=true',
+              options: {
+                presets: ['babel-preset-react'],
+              }
+            },
+            // {
+            //   loader: 'eslint-loader',
+            //   options: {
+            //     baseConfig: path.resolve(__dirname, "../"),
+            //   }
+            // },
+          ],
         },
         {
           test: /\.css$/,
@@ -58,5 +66,5 @@ module.exports = function(env) {
       path: path.resolve(__dirname, '../dist'), // 文件的输出路径
       publicPath: '/', // 确保文件资源能正常访问
     },
-  }
-}
+  };
+};

@@ -1,6 +1,20 @@
-import * as React from 'react'
-import * as ReactDOM from 'react-dom'
-import './index.css'
-import App from './App'
+import React from 'react'
+import { render } from 'react-dom'
+import { Provider } from 'react-redux'
+import { createStore, applyMiddleware } from 'redux'
+import todoApp from './reducers'
+import App from './components/App'
+import thunkMiddleware from 'redux-thunk'
 
-ReactDOM.render(<App />, document.getElementById('root'))
+const store = createStore(
+  todoApp,
+  applyMiddleware(
+    thunkMiddleware, // 允许我们 dispatch() 函数
+  )
+)
+render(
+  <Provider store={store}>
+    <App />
+  </Provider>,
+  document.getElementById('root')
+)
