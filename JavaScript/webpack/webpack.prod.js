@@ -8,7 +8,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin')
 
 module.exports = function(env) {
   return merge(base(env), {
-    // devtool: 'source-map',
+    devtool: 'source-map',
     plugins: [
       new ExtractTextPlugin({ // 提取 css 文件
         filename: '[name].css'
@@ -29,7 +29,7 @@ module.exports = function(env) {
       }),
       new CleanWebpackPlugin(['./dist']), // 清除目录
       new UglifyJSPlugin({ // tree shaking
-        // sourceMap: true,
+        sourceMap: true,
       }),
     ],
   })

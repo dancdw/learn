@@ -7,18 +7,18 @@ module.exports = function(env) {
   return {
     context: __dirname,
     entry: {
-      app: '../src/index.ts',
+      app: '../src/index.js',
       // print: './src/asset/print.js',
       vendor: ['lodash'],
     },
     module: {
       rules: [
-        {
-          test: /\.tsx?$/,
-          include: path.resolve(__dirname, "../src"),
-          use: 'ts-loader',
-          exclude: /node_module/,
-        },
+        // {
+        //   test: /\.tsx?$/,
+        //   include: path.resolve(__dirname, "../src"),
+        //   use: 'ts-loader',
+        //   exclude: /node_module/,
+        // },
         {
           test: /\.css$/,
           include: path.resolve(__dirname, "../src/asset"),
