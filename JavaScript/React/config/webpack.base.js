@@ -27,7 +27,7 @@ module.exports = function(env) {
             {
               loader: 'babel-loader?cacheDirectory=true',
               options: {
-                presets: ['babel-preset-react'],
+                presets: ['babel-preset-react-app',],
               }
             },
             // {

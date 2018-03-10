@@ -14,6 +14,7 @@ module.exports = function(env) {
       // port: 9000
       open: true,
       compress: true,
+      historyApiFallback: true,
     },
     plugins: [
       new webpack.DefinePlugin({ // 设置环境变量，在 src 目录里使用

@@ -6,9 +6,7 @@ import { Provider } from 'react-redux'
 import thunkMiddleware from 'redux-thunk'
 
 import createHistory from 'history/createBrowserHistory'
-import { Router, Route, Switch } from 'react-router-dom'
-
-import { routerMiddleware, push } from 'react-router-redux'
+import { Router, Route } from 'react-router-dom'
 
 import todoApp from './reducers'
 import App from './App'
@@ -19,16 +17,15 @@ const store = createStore(
   todoApp,
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
   applyMiddleware(
-    routerMiddleware(history),
     thunkMiddleware
   ),
 )
-// store.dispatch(push('/'))
+// store.dispatch(push('/foo'))
 
 ReactDOM.render(
   <Provider store={store}>
     <Router history={history}>
-      <Route component={App} />
+      <Route exact component={App} />
     </Router>
   </Provider>,
   document.getElementById('root')

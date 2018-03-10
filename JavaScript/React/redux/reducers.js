@@ -1,5 +1,4 @@
 import { combineReducers } from 'redux';
-import { routerReducer } from 'react-router-redux'
 import { ADD_TODO, TOGGLE_TODO, SET_VISIBILITY_FILTER, VisibilityFilters, DEL_TODO, GET_TODO } from './actions';
 const { SHOW_ALL } = VisibilityFilters;
 
@@ -10,8 +9,6 @@ const initialState = {
 };
 
 let index = 1
-const auth = false
-
 function todos(state = initialState.todos, action) {
   switch (action.type) {
     case GET_TODO:
@@ -58,8 +55,7 @@ function visibilityFilter(state = SHOW_ALL, action) {
 
 const todoApp = combineReducers({
   visibilityFilter,
-  todos,
-  router: routerReducer
+  todos
 })
 
 export default todoApp
